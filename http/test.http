@@ -1,0 +1,31 @@
+@url = http://localhost:3030/v1
+###
+GET {{url}}/
+###
+GET {{url}}/book/1/test
+###
+GET {{url}}/query?title=test&genre=123
+###
+POST {{url}}/books
+Content-Type: application/json
+
+{
+  "Title" : "123",
+  "Price" : 111,
+  "Description" : "321",
+  "Rating" : 5
+}
+###
+GET {{url}}/books/2
+###
+PUT {{url}}/books/6
+Content-Type: application/json
+
+{
+  "Title" : "123456 6",
+  "Price" : 111,
+  "Description" : "321",
+  "Rating" : 5
+}
+###
+DELETE  {{url}}/books/5
