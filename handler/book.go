@@ -9,10 +9,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator"
+	"github.com/golang-jwt/jwt"
 )
 
 type bookHandler struct {
 	bookService book.Service
+}
+
+func NewBookHandler(service book.Service) *bookHandler {
+	return &bookHandler{service}
 }
 
 func (h *bookHandler) GetBooks(c *gin.Context) {
@@ -35,12 +40,36 @@ func (h *bookHandler) GetBooks(c *gin.Context) {
 	})
 }
 
-func NewBookHandler(service book.Service) *bookHandler {
-	return &bookHandler{service}
+func (h *bookHandler) GetBooksByUser(c *gin.Context) {
+	jwtClaims, _ := c.Get("jwtClaims")
+	claims, _ := jwtClaims.(jwt.MapClaims) 
+	userID, _ := claims["sub"].(float64)
+
+	books, err := h.bookService.FindAllByUser(uint(userID))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": err,
+		})
+		return
+	}
+
+	var booksResponse []book.BookResponse
+	for _, b := range books {
+		bookResponse := book.ConvertToBookResponse(b)
+		booksResponse = append(booksResponse, bookResponse)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": booksResponse,
+	})
 }
 
 func (h *bookHandler) PostBookHandler(c *gin.Context) {
 	var bookRequest book.BookRequest
+
+	jwtClaims, _ := c.Get("jwtClaims")
+	claims, _ := jwtClaims.(jwt.MapClaims)
+	userID, _ := claims["sub"].(float64)
 
 	err := c.ShouldBindJSON(&bookRequest)
 	if err != nil {
@@ -62,7 +91,7 @@ func (h *bookHandler) PostBookHandler(c *gin.Context) {
 			return
 		}
 	}
-	book, err := h.bookService.Create(bookRequest)
+	book, err := h.bookService.Create(bookRequest, uint(userID))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -134,18 +163,18 @@ func (h *bookHandler) UpdateBookHandler(c *gin.Context) {
 	})
 }
 
-func (h *bookHandler) DeleteBook(c *gin.Context){
-	ID,_:=strconv.Atoi(c.Param("id"))
+func (h *bookHandler) DeleteBook(c *gin.Context) {
+	ID, _ := strconv.Atoi(c.Param("id"))
 	b, err := h.bookService.Delete(ID)
 	bookResponse := book.ConvertToBookResponse(b)
 
-	if err!= nil{
-		c.JSON(http.StatusBadRequest,gin.H{
-			"errors":err,
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": err,
 		})
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"data":bookResponse,
+		"data": bookResponse,
 	})
 }

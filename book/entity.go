@@ -10,4 +10,5 @@ type Book struct {
 	Rating      int
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	UserID      uint
 }

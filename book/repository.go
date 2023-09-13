@@ -4,6 +4,7 @@ import "gorm.io/gorm"
 
 type Repository interface {
 	FindAll() ([]Book, error)
+	FindAllByUser(UserID uint) ([]Book, error)
 	FindById(ID int) (Book, error)
 	Create(book Book) (Book, error)
 	Update(book Book) (Book, error)
@@ -24,6 +25,12 @@ func (r *repository) FindAll() ([]Book, error) {
 	return books, err
 }
 
+func (r *repository) FindAllByUser(UserID uint) ([]Book, error) {
+	var books []Book
+	err := r.db.Where("user_id = ?", UserID).Find(&books).Error
+	return books, err
+}
+
 func (r *repository) FindById(ID int) (Book, error) {
 	var book Book
 	err := r.db.First(&book, ID).Error
@@ -40,7 +47,7 @@ func (r *repository) Update(book Book) (Book, error) {
 	return book, err
 }
 
-func (r *repository) Delete(book Book) (Book, error){
-	err:= r.db.Delete(&book).Error
+func (r *repository) Delete(book Book) (Book, error) {
+	err := r.db.Delete(&book).Error
 	return book, err
 }
