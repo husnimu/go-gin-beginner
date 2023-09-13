@@ -47,12 +47,12 @@ func main() {
 	routerV1.GET("/book/:id/:title", handler.BookHandler)
 	routerV1.GET("/query", handler.QueryHandler)
 
-	routerV1Books := router.Group("/books", middleware.RequireAuth)
-	routerV1Books.GET("/books", bookHandler.GetBooks)
-	routerV1Books.GET("/books/:id", bookHandler.GetBook)
-	routerV1Books.POST("/books", bookHandler.PostBookHandler)
-	routerV1Books.PUT("/books/:id", bookHandler.UpdateBookHandler)
-	routerV1Books.DELETE("/books/:id", bookHandler.DeleteBook)
+	routerV1Books := router.Group("books", middleware.RequireAuth)
+	routerV1Books.GET("", bookHandler.GetBooksByUser)
+	routerV1Books.GET("/:id", bookHandler.GetBook)
+	routerV1Books.POST("", bookHandler.PostBookHandler)
+	routerV1Books.PUT("/:id", bookHandler.UpdateBookHandler)
+	routerV1Books.DELETE("/:id", bookHandler.DeleteBook)
 
 	router.Run(":3030")
 }

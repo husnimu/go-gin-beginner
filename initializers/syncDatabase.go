@@ -1,13 +1,13 @@
 package initializers
 
 import (
-	"os/user"
 	"pustaka-api/book"
+	"pustaka-api/user"
 
 	"gorm.io/gorm"
 )
 
 func SyncDatabase(db *gorm.DB) error {
-	err := db.AutoMigrate(book.Book{}, user.User{})
+	err := db.AutoMigrate(user.User{}, book.Book{})
 	return err
 }

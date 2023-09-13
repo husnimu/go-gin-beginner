@@ -1,31 +1,34 @@
-@url = http://localhost:3030/v1
+@url = http://localhost:3030/books
+# @credential = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTcxNzkwNTksInN1YiI6MX0.UNKsNsZ58eVMa34m3J0fWLy62dTT6Hd4AwUuPwr09Hk
+@credential = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTcxNzkzNjMsInN1YiI6Mn0.BZR1DrIjM8zH1C_DFtpBVTg-gba8Wcvg7idGvSevzqE
 ###
-GET {{url}}/
+GET {{url}}
+Authorization: {{credential}}
 ###
-GET {{url}}/book/1/test
-###
-GET {{url}}/query?title=test&genre=123
-###
-POST {{url}}/books
+POST {{url}}
 Content-Type: application/json
+Authorization: {{credential}}
 
 {
-  "Title" : "123",
+  "Title" : "5",
   "Price" : 111,
-  "Description" : "321",
+  "Description" : "5",
   "Rating" : 5
 }
 ###
-GET {{url}}/books/2
+GET {{url}}/3
+Authorization: {{credential}}
 ###
-PUT {{url}}/books/6
+PUT {{url}}/2
 Content-Type: application/json
+Authorization: {{credential}}
 
 {
-  "Title" : "123456 6",
+  "Title" : "2 1",
   "Price" : 111,
-  "Description" : "321",
+  "Description" : "2 1",
   "Rating" : 5
 }
 ###
-DELETE  {{url}}/books/5
+DELETE  {{url}}/2
+Authorization: {{credential}}
